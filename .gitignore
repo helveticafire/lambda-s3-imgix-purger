@@ -60,3 +60,12 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+
+config.json
+# Pycharm
+.idea
+# OS x
+.DS_Store
+# direnv
+.envrc
+
