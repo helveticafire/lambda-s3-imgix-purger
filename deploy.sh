@@ -10,6 +10,12 @@ set -x
 dst_zip="lambda-$(date +%s).zip"
 dst="$TMPDIR$dst_zip"
 
-zip -r "$dst" lambda_function.py config.json env/lib/python2.7/site-packages/requests/ env/lib/python2.7/site-packages/requests-2.9.1.dist-info/
+cp -r env/lib/python2.7/site-packages/requests/ requests/
+cp -r env/lib/python2.7/site-packages/requests-2.9.1.dist-info/ requests-2.9.1.dist-info/
+
+zip -r "$dst" lambda_function.py config.json requests requests-2.9.1.dist-info
+
+rm -rf requests/
+rm -rf requests-2.9.1.dist-info/
 
 aws lambda update-function-code --function-name "$LAMBDA_FN_NAME"  --zip-file fileb://"$dst" --publish
