@@ -5,8 +5,8 @@ set -x
 
 # Uses the AWS CLI and jq to create an IAM role for _
 
-role_name=lambda_imgix_purge
-policy_name=lambda_imgix_purge_policy
+role_name="lambda_imgix_purge"
+policy_name="lambda_imgix_purge_policy"
 
 # Create the role
 aws iam create-role --role-name $role_name --assume-role-policy-document file://lambda_iam_role.json
