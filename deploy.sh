@@ -4,8 +4,11 @@ set -euo pipefail
 set -x
 
 # TODO Verify that there is a config file
-# TODO Make sure it is valid json
-# TODO Parse requirements file
+# https://github.com/helveticafire/lambda-s3-imgix-purger/issues/7
+# TODO Ensure config file is valid json
+# https://github.com/helveticafire/lambda-s3-imgix-purger/issues/8
+# TODO Make a distribution requirements file for production use
+# https://github.com/helveticafire/lambda-s3-imgix-purger/issues/9
 
 dst_zip="lambda-$(date +%s).zip"
 dst="$TMPDIR$dst_zip"

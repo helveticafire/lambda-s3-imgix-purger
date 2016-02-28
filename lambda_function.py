@@ -11,7 +11,11 @@ def lambda_handler(event, context):
     # print("Received event: " + json.dumps(event, indent=2))
 
     print('Handler started!')
+    # TODO: Validate s3 notification event
+    # https://github.com/helveticafire/lambda-s3-imgix-purger/issues/1
     key = urllib.unquote_plus(event['Records'][0]['s3']['object']['key']).decode('utf8')
+    # TODO: Handle keys that end in / forward lash indicating director not a file
+    # https://github.com/helveticafire/lambda-s3-imgix-purger/issues/2
     purge_endpoint = 'https://api.imgix.com/v2/image/purger'
     results = {}
     with open('config.json') as config_file:
