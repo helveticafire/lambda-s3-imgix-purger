@@ -36,10 +36,33 @@ check_fn_name() {
     echo "$LAMBDA_FN_NAME" > /dev/null
 }
 
+check_role_arn() {
+    echo "$LAMBDA_ROLE_ARN" > /dev/null
+}
+
 update() {
     check_fn_name
     create_zip
     aws lambda update-function-code --function-name "$LAMBDA_FN_NAME" --zip-file fileb://"$dst" --publish
+}
+
+create() {
+    check_fn_name
+    check_role_arn
+    create_zip
+
+    # TODO Make create-function more configurable using --cli-input-json
+    # https://github.com/helveticafire/lambda-s3-imgix-purger/issues/12
+
+    aws lambda create-function --function-name "$LAMBDA_FN_NAME" \
+                               --runtime "python2.7" \
+                               --role "$LAMBDA_ROLE_ARN" \
+                               --handler "lambda_function.lambda_handler" \
+                               --description "An Amazon S3 trigger that purges Imgix for the object that has been updated." \
+                               --memory-size 128 \
+                               --timeout 3 \
+                               --zip-file fileb://"$dst" \
+                               --publish
 }
 
 # call arguments verbatim:
