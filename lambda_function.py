@@ -35,13 +35,13 @@ def lambda_handler(event, context):
         print('Key cannot be a directory')
         return {}
 
-    purge_endpoint = 'https://api.imgix.com/v2/image/purger'
-    results = {}
     config_file_name = 'config.json'
     if not os.path.isfile(config_file_name):
         print('There is no config file')
         return {}
 
+    purge_endpoint = 'https://api.imgix.com/v2/image/purger'
+    results = {}
     with open(config_file_name) as config_file:
         config = json.load(config_file)
         domains = config['domains']
