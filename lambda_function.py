@@ -3,6 +3,7 @@ from __future__ import print_function
 import json
 import urllib
 import requests
+import os.path
 
 print('Loading function')
 
@@ -36,7 +37,12 @@ def lambda_handler(event, context):
 
     purge_endpoint = 'https://api.imgix.com/v2/image/purger'
     results = {}
-    with open('config.json') as config_file:
+    config_file_name = 'config.json'
+    if not os.path.isfile(config_file_name):
+        print('There is no config file')
+        return {}
+
+    with open(config_file_name) as config_file:
         config = json.load(config_file)
         domains = config['domains']
         for domain, v in domains.iteritems():

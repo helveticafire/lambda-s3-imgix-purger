@@ -40,6 +40,10 @@ class LambdaHandler(unittest.TestCase):
         notification_event = {'Records': [{'s3': {'object': {'key': 'blah/'}}}]}
         self.assertEqual(lambda_handler(notification_event, ''), {})
 
+    def test_no_config(self):
+        notification_event = {'Records': [{'s3': {'object': {'key': 'blah'}}}]}
+        self.assertEqual(lambda_handler(notification_event, ''), {})
+
 
 if __name__ == '__main__':
     unittest.main()
