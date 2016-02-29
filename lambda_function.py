@@ -30,9 +30,10 @@ def lambda_handler(event, context):
     if key == '':
         print('Event dict was not valid, key not set')
         return {}
+    if key.endswith('/'):
+        print('Key cannot be a directory')
+        return {}
 
-    # TODO: Handle keys that end in / forward lash indicating director not a file
-    # https://github.com/helveticafire/lambda-s3-imgix-purger/issues/2
     purge_endpoint = 'https://api.imgix.com/v2/image/purger'
     results = {}
     with open('config.json') as config_file:
