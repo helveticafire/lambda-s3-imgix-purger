@@ -1,4 +1,4 @@
 {
     "api_key": "somealphanumericvalue",
-    "domains": [{"blah.imgix.net": {"schemes": ["http", "https"]}}]
+    "domains": {"blah.imgix.net": {"schemes": ["http", "https"]}}
 }
