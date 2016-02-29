@@ -19,15 +19,10 @@ def lambda_handler(event, context):
 
     try:
         key = urllib.unquote_plus(event['Records'][0]['s3']['object']['key']).decode('utf8')
-    except KeyError as err:
+    except (KeyError, IndexError, TypeError)as err:
         print('Event dict was not valid, error: {}'.format(err))
         return {}
-    except IndexError as err:
-        print('Event dict was not valid, error: {}'.format(err))
-        return {}
-    except TypeError as err:
-        print('Event dict was not valid, error: {}'.format(err))
-        return {}
+
     if key == '':
         print('Event dict was not valid, key not set')
         return {}
