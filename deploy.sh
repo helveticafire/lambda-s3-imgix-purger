@@ -8,6 +8,16 @@ dst="$TMPDIR$dst_zip"
 temp="temp-$(date +%s)"
 temp_dir="$TMPDIR$temp"
 
+check_config_exists() {
+    if [ -f config.json ]; then
+        echo "config.json exists"
+        return 1
+    else
+        echo "NO config.json"
+        return 0
+    fi
+}
+
 create_zip() {
     mkdir "$temp_dir"
 
@@ -17,8 +27,10 @@ create_zip() {
     cp -r env/lib/python2.7/site-packages/requests/ "$temp_dir/requests/"
     cp -r env/lib/python2.7/site-packages/requests-2.9.1.dist-info/ "$temp_dir/requests-2.9.1.dist-info/"
 
-    # TODO Verify that there is a config file
-    # https://github.com/helveticafire/lambda-s3-imgix-purger/issues/7
+    if check_config_exists; then
+        exit 1
+    fi
+
     # TODO Ensure config file is valid json
     # https://github.com/helveticafire/lambda-s3-imgix-purger/issues/8
 
