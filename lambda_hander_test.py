@@ -5,7 +5,7 @@ import __builtin__ as builtins
 import json
 
 
-class LambdaHandler(unittest.TestCase):
+class LambdaHandlerBase(unittest.TestCase):
 
     def setUp(self):
         self.basic_types = ['', u'', 'a', 'hello-str',
@@ -15,6 +15,9 @@ class LambdaHandler(unittest.TestCase):
         self.json_exclude = [1.0j]
         self.the_basics = self.basic_types + self.basic_collections
         self.valid_notification_event = {'Records': [{'s3': {'object': {'key': 'blah'}}}]}
+
+
+class LambdaHandler(LambdaHandlerBase):
 
     def test_ensure_event_is_dict(self):
         self.assertEqual(lambda_handler('', ''), {})
@@ -53,6 +56,18 @@ class LambdaHandler(unittest.TestCase):
 
     def test_no_config(self):
         self.assertEqual(lambda_handler(self.valid_notification_event, ''), {})
+
+
+class LambdaConfigHandling(LambdaHandlerBase):
+
+    def setUp(self):
+        super(LambdaConfigHandling, self).setUp()
+        # self.patcher = patch('os.path.isfile').start()
+        # instance = self.patcher.return_value
+        # instance.method.return_value = True
+
+    # def tearDown(self):
+    #     self.patcher.stop()
 
     def test_json_config_type_handling(self):
         with patch('os.path.isfile') as isfile_mock:
