@@ -3,3 +3,14 @@
 machine:
   python:
     version: 2.7.10
+
+dependencies:
+  override:
+    - pip install -r requirements.txt
+    - pip install coveralls
+
+test:
+  override:
+    - nosetests --with-coverage
+  post:
+    - coveralls
