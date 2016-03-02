@@ -68,6 +68,10 @@ class LambdaHandler(LambdaHandlerBase):
         notification_event = {'Records': [{'s3': {'object': {'key': 'blah/'}}}]}
         self.assertEqual(lambda_handler(notification_event, ''), {})
 
+    def test_decoding_exception(self):
+        notification_event = {'Records': [{'s3': {'object': {'key': "\x81"}}}]}
+        self.assertEqual(lambda_handler(notification_event, ''), {})
+
     def test_no_config(self):
         with patch('os.path.isfile') as isfile_mock:
             isfile_mock.return_value = False
