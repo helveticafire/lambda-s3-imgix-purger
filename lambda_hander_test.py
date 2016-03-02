@@ -20,35 +20,46 @@ class LambdaHandlerBase(unittest.TestCase):
 class LambdaHandler(LambdaHandlerBase):
 
     def test_ensure_event_is_dict(self):
-        self.assertEqual(lambda_handler('', ''), {})
-        self.assertEqual(lambda_handler('blah', ''), {})
-        self.assertEqual(lambda_handler(u'', ''), {})
-        self.assertEqual(lambda_handler(u'blah', ''), {})
-        self.assertEqual(lambda_handler([], ''), {})
-        self.assertEqual(lambda_handler([1, 2, 3], ''), {})
-        self.assertEqual(lambda_handler(1, ''), {})
-        self.assertEqual(lambda_handler(-1, ''), {})
-        self.assertEqual(lambda_handler(1L, ''), {})
-        self.assertEqual(lambda_handler(0, ''), {})
-        self.assertEqual(lambda_handler(0.0, ''), {})
-        self.assertEqual(lambda_handler(1.0j, ''), {})
-        self.assertEqual(lambda_handler(True, ''), {})
-        self.assertEqual(lambda_handler(False, ''), {})
-        self.assertEqual(lambda_handler((1, 2), ''), {})
+        for x in self.the_basics + self.json_exclude:
+            self.assertEqual(lambda_handler(x, ''), {})
 
-    def test_validate_event_dict(self):
-        self.assertEqual(lambda_handler({}, ''), {})
-        notification_event = {'Records': 0}
-        self.assertEqual(lambda_handler(notification_event, ''), {})
-        notification_event = {'Records': []}
-        self.assertEqual(lambda_handler(notification_event, ''), {})
-        notification_event = {'Records': [{'s3': {}}]}
-        self.assertEqual(lambda_handler(notification_event, ''), {})
-        notification_event = {'Records': [{'s3': {'object': {}}}]}
-        self.assertEqual(lambda_handler(notification_event, ''), {})
-        notification_event = {'Records': [{'s3': {'object': {'key': ''}}}]}
-        self.assertEqual(lambda_handler(notification_event, ''), {})
+    def test_validate_event_dict_type_handling(self):
+        for x in self.basic_types:
+            for y in reversed(self.the_basics):
+                self.assertEqual(lambda_handler({x: y}, ''), {})
 
+    def test_validate_event_records_type_handling_1(self):
+        for x in self.the_basics + self.json_exclude:
+            self.assertEqual(lambda_handler({'Records': x}, ''), {})
+
+    def test_validate_event_records_type_handling_1(self):
+        for x in self.basic_types:
+            for y in reversed(self.the_basics):
+                self.assertEqual(lambda_handler({'Records': [{x: y}]}, ''), {})
+
+    def test_validate_event_s3_type_handling_0(self):
+        for x in self.the_basics + self.json_exclude:
+            self.assertEqual(lambda_handler({'Records': [{'s3': x}]}, ''), {})
+
+    def test_validate_event_s3_type_handling_1(self):
+        for x in self.basic_types:
+            for y in reversed(self.the_basics):
+                self.assertEqual(lambda_handler({'Records': [{'s3': {x: y}}]}, ''), {})
+
+    def test_validate_event_object_type_handling_0(self):
+        for x in self.the_basics + self.json_exclude:
+            self.assertEqual(lambda_handler({'Records': [{'s3': {'object': x}}]}, ''), {})
+
+    def test_validate_event_object_type_handling_1(self):
+        for x in self.basic_types:
+            for y in reversed(self.the_basics):
+                self.assertEqual(lambda_handler({'Records': [{'s3': {'object': {x: y}}}]}, ''), {})
+
+    def test_validate_event_key_type_handling(self):
+        for x in self.the_basics:
+            self.assertEqual(lambda_handler({'Records': [{'s3': {'object': {'key': x}}}]}, ''), {})
+
+    def test_validate_event(self):
         with patch('os.path.isfile') as isfile_mock:
             isfile_mock.return_value = False
             self.assertEqual(lambda_handler(self.valid_notification_event, ''), {})

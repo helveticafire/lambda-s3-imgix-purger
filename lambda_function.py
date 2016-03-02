@@ -18,9 +18,21 @@ def lambda_handler(event, context):
         return {}
 
     try:
-        key = urllib.unquote_plus(event['Records'][0]['s3']['object']['key']).decode('utf8')
-    except (KeyError, IndexError, TypeError)as err:
+        raw_key = event['Records'][0]['s3']['object']['key']
+    except (KeyError, IndexError, TypeError) as err:
         print('Event dict was not valid, error: {}'.format(err))
+        return {}
+
+    try:
+        unquoted_key = urllib.unquote_plus(raw_key)
+    except (Exception, AttributeError) as err:
+        print('Running unquote_plus on raw_key caused error: {}'.format(err))
+        return {}
+
+    try:
+        key = unquoted_key.decode('utf8')
+    except Exception as err:
+        print('Decoding unquoted_key caused error: {}'.format(err))
         return {}
 
     if key == '':
