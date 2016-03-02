@@ -76,8 +76,7 @@ class LambdaConfigHandling(LambdaHandlerBase):
 
     def test_json_config_type_handling(self):
         with patch('os.path.isfile') as isfile_mock:
-            instance = isfile_mock.return_value
-            instance.method.return_value = True
+            isfile_mock.return_value = True
 
             for x in self.the_basics:
                 mock_data = json.dumps(x)
@@ -86,8 +85,7 @@ class LambdaConfigHandling(LambdaHandlerBase):
 
     def test_domain_type_handling_config(self):
         with patch('os.path.isfile') as isfile_mock:
-            instance = isfile_mock.return_value
-            instance.method.return_value = True
+            isfile_mock.return_value = True
 
             for x in self.the_basics:
                 mock_data = json.dumps({'domains': x})
@@ -96,8 +94,7 @@ class LambdaConfigHandling(LambdaHandlerBase):
 
     def test_api_key_type_handling_config(self):
         with patch('os.path.isfile') as isfile_mock:
-            instance = isfile_mock.return_value
-            instance.method.return_value = True
+            isfile_mock.return_value = True
 
             for x in self.the_basics:
                 mock_data = json.dumps({'api_key': x})
@@ -106,8 +103,7 @@ class LambdaConfigHandling(LambdaHandlerBase):
 
     def test_config_plain_text_handling(self):
         with patch('os.path.isfile') as isfile_mock:
-            instance = isfile_mock.return_value
-            instance.method.return_value = True
+            isfile_mock.return_value = True
 
             for x in self.the_basics + self.json_exclude:
                 with patch.object(builtins, 'open', mock_open(read_data=x)):
@@ -115,8 +111,7 @@ class LambdaConfigHandling(LambdaHandlerBase):
 
     def test_domains_dict_type_handling_config(self):
         with patch('os.path.isfile') as isfile_mock:
-            instance = isfile_mock.return_value
-            instance.method.return_value = True
+            isfile_mock.return_value = True
 
             for x in self.basic_types:
                 for y in reversed(self.the_basics):
@@ -127,8 +122,7 @@ class LambdaConfigHandling(LambdaHandlerBase):
 
     def test_imgix_domain_forward_lash_check_source_config(self):
         with patch('os.path.isfile') as isfile_mock:
-            instance = isfile_mock.return_value
-            instance.method.return_value = True
+            isfile_mock.return_value = True
 
             mock_data = json.dumps({'api_key': 'example',
                                     'domains': {'/sdafasdf/': ''}})
@@ -137,8 +131,7 @@ class LambdaConfigHandling(LambdaHandlerBase):
 
     def test_imgix_correct_domain_source_config(self):
         with patch('os.path.isfile') as isfile_mock:
-            instance = isfile_mock.return_value
-            instance.method.return_value = True
+            isfile_mock.return_value = True
 
             mock_data = json.dumps({'api_key': 'example',
                                     'domains': {'dsaf.not.imgix.net': ''}})
@@ -147,8 +140,7 @@ class LambdaConfigHandling(LambdaHandlerBase):
 
     def test_domain_and_api_key_types_handling_config(self):
         with patch('os.path.isfile') as isfile_mock:
-            instance = isfile_mock.return_value
-            instance.method.return_value = True
+            isfile_mock.return_value = True
 
             for x in self.the_basics:
                 for y in reversed(self.the_basics):
@@ -159,8 +151,7 @@ class LambdaConfigHandling(LambdaHandlerBase):
 
     def test_domain_url_dict_types_handling_config(self):
         with patch('os.path.isfile') as isfile_mock:
-            instance = isfile_mock.return_value
-            instance.method.return_value = True
+            isfile_mock.return_value = True
 
             for x in self.basic_types:
                 for y in reversed(self.the_basics):
@@ -171,8 +162,7 @@ class LambdaConfigHandling(LambdaHandlerBase):
 
     def test_scheme_types_handling_config(self):
         with patch('os.path.isfile') as isfile_mock:
-            instance = isfile_mock.return_value
-            instance.method.return_value = True
+            isfile_mock.return_value = True
 
             for y in reversed(self.the_basics):
                 mock_data = json.dumps({'api_key': 'example',
@@ -182,8 +172,7 @@ class LambdaConfigHandling(LambdaHandlerBase):
 
     def test_correct_config(self):
         with patch('os.path.isfile') as isfile_mock:
-            instance = isfile_mock.return_value
-            instance.method.return_value = True
+            isfile_mock.return_value = True
 
             mock_data = json.dumps({'api_key': 'example',
                                     'domains': {'dsaf.not.imgix.net': {'schemes': ['http', 'https']}}})
@@ -197,8 +186,7 @@ class LambdaConfigHandling(LambdaHandlerBase):
 
     def test_correct_config_multi_domains(self):
         with patch('os.path.isfile') as isfile_mock:
-            instance = isfile_mock.return_value
-            instance.method.return_value = True
+            isfile_mock.return_value = True
 
             mock_data = json.dumps({'api_key': 'example',
                                     'domains': {'dsaf.not.imgix.net': {'schemes': ['http', 'https']},
