@@ -1,2 +1,4 @@
 requests==2.9.1
 mock==1.0.1
+jsonschema==2.5.1
+functools32==3.2.3-2

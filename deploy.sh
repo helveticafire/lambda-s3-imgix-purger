@@ -18,7 +18,29 @@ check_config_exists() {
     fi
 }
 
+check_config_is_valid() {
+    if [ $(python check_conf.py "config.json") = 1 ]; then
+        echo "config.json is valid"
+        return 1
+    else
+        echo "config.json ***NOT*** valid"
+        return 0
+    fi
+}
+
+check_config() {
+    if check_config_exists || check_config_is_valid; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 create_zip() {
+    if check_config; then
+        echo "problem with config.json"
+        exit 1
+    fi
     mkdir "$temp_dir"
 
     # TODO Make a distribution requirements file for production use
@@ -26,13 +48,6 @@ create_zip() {
 
     cp -r env/lib/python2.7/site-packages/requests/ "$temp_dir/requests/"
     cp -r env/lib/python2.7/site-packages/requests-2.9.1.dist-info/ "$temp_dir/requests-2.9.1.dist-info/"
-
-    if check_config_exists; then
-        exit 1
-    fi
-
-    # TODO Ensure config file is valid json
-    # https://github.com/helveticafire/lambda-s3-imgix-purger/issues/8
 
     cp {lambda_function.py,config.json} "$temp_dir/."
 
