@@ -48,14 +48,19 @@ class LambdaHandler(LambdaHandlerBase):
         self.assertEqual(lambda_handler(notification_event, ''), {})
         notification_event = {'Records': [{'s3': {'object': {'key': ''}}}]}
         self.assertEqual(lambda_handler(notification_event, ''), {})
-        self.assertEqual(lambda_handler(self.valid_notification_event, ''), {})
+
+        with patch('os.path.isfile') as isfile_mock:
+            isfile_mock.return_value = False
+            self.assertEqual(lambda_handler(self.valid_notification_event, ''), {})
 
     def test_s3_key_for_dir(self):
         notification_event = {'Records': [{'s3': {'object': {'key': 'blah/'}}}]}
         self.assertEqual(lambda_handler(notification_event, ''), {})
 
     def test_no_config(self):
-        self.assertEqual(lambda_handler(self.valid_notification_event, ''), {})
+        with patch('os.path.isfile') as isfile_mock:
+            isfile_mock.return_value = False
+            self.assertEqual(lambda_handler(self.valid_notification_event, ''), {})
 
 
 class LambdaConfigHandling(LambdaHandlerBase):
@@ -98,7 +103,6 @@ class LambdaConfigHandling(LambdaHandlerBase):
                 mock_data = json.dumps({'api_key': x})
                 with patch.object(builtins, 'open', mock_open(read_data=mock_data)):
                     self.assertEqual(lambda_handler(self.valid_notification_event, ''), {})
-
 
     def test_config_plain_text_handling(self):
         with patch('os.path.isfile') as isfile_mock:
