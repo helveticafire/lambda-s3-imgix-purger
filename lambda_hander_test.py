@@ -56,8 +56,11 @@ class LambdaHandler(LambdaHandlerBase):
                 self.assertEqual(lambda_handler({'Records': [{'s3': {'object': {x: y}}}]}, ''), {})
 
     def test_validate_event_key_type_handling(self):
-        for x in self.the_basics:
-            self.assertEqual(lambda_handler({'Records': [{'s3': {'object': {'key': x}}}]}, ''), {})
+        with patch('os.path.isfile') as isfile_mock:
+            isfile_mock.return_value = False
+
+            for x in self.the_basics:
+                self.assertEqual(lambda_handler({'Records': [{'s3': {'object': {'key': x}}}]}, ''), {})
 
     def test_validate_event(self):
         with patch('os.path.isfile') as isfile_mock:
