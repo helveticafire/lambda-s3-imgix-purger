@@ -92,5 +92,28 @@ create() {
                                --publish
 }
 
+check_fn_exists() {
+    b=$(aws lambda list-functions | jq -e '.Functions[].FunctionName')
+    if [ "$b" == "\"$LAMBDA_FN_NAME\"" ]; then
+        echo "--- Function exists"
+        return 1
+    else
+        echo "--- No Function exists"
+        return 0
+    fi
+}
+
+run() {
+    if check_fn_exists; then
+        echo "No Function exists"
+        echo "Creating function"
+        create
+    else
+        echo "Function exists"
+        echo "Updating function"
+        update
+    fi
+}
+
 # call arguments verbatim:
 "$@"
