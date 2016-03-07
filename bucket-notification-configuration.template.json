@@ -1,0 +1,24 @@
+{
+    "Bucket": "",
+    "NotificationConfiguration": {
+        "LambdaFunctionConfigurations": [
+            {
+                "Id": "",
+                "LambdaFunctionArn": "",
+                "Events": [
+                    "s3:ObjectCreated:*"
+                ],
+                "Filter": {
+                    "Key": {
+                        "FilterRules": [
+                            {
+                                "Name": "",
+                                "Value": ""
+                            }
+                        ]
+                    }
+                }
+            }
+        ]
+    }
+}

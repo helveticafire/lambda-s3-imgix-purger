@@ -73,6 +73,25 @@ update() {
     aws lambda update-function-code --function-name "$LAMBDA_FN_NAME" --zip-file fileb://"$dst" --publish
 }
 
+create_notification() {
+    echo "Creating bucket notification"
+    # TODO Create bucket-notification-configuration from json file
+    # https://github.com/helveticafire/lambda-s3-imgix-purger/issues/11
+    fn_exists=$(aws s3api get-bucket-notification-configuration --bucket "$TARGET_BUCKET")
+
+    if [ -z "$fn_exists" ]; then
+
+        python create_s3_notification.py "$TARGET_BUCKET" $1
+
+        echo
+        read -p "Press [Enter] when done adjusting the bucket-notification-configuration.json"
+        echo
+#        aws s3api put-bucket-notification-configuration --cli-input-json fileb://bucket-notification-configuration.json
+    fi
+
+}
+
+
 create() {
     check_fn_name
     check_role_arn
@@ -81,19 +100,21 @@ create() {
     # TODO Make create-function more configurable using --cli-input-json
     # https://github.com/helveticafire/lambda-s3-imgix-purger/issues/12
 
-    aws lambda create-function --function-name "$LAMBDA_FN_NAME" \
-                               --runtime "python2.7" \
-                               --role "$LAMBDA_ROLE_ARN" \
-                               --handler "lambda_function.lambda_handler" \
-                               --description "An Amazon S3 trigger that purges Imgix for the object that has been updated." \
-                               --memory-size 128 \
-                               --timeout 3 \
-                               --zip-file fileb://"$dst" \
-                               --publish
+    function_arn=$(aws lambda create-function --function-name "$LAMBDA_FN_NAME" \
+                                              --runtime "python2.7" \
+                                              --role "$LAMBDA_ROLE_ARN" \
+                                              --handler "lambda_function.lambda_handler" \
+                                              --description "An Amazon S3 trigger that purges Imgix for the object that has been updated." \
+                                              --memory-size 128 \
+                                              --timeout 3 \
+                                              --zip-file fileb://"$dst" \
+                                              --publish \
+                                              --query 'FunctionArn')
+    create_notification function_arn
 }
 
 check_fn_exists() {
-    b=$(aws lambda list-functions | jq -e '.Functions[].FunctionName')
+    b=$(aws lambda list-functions --query "Functions[?FunctionName=='imgix-purge'].FunctionName | [0]")
     if [ "$b" == "\"$LAMBDA_FN_NAME\"" ]; then
         echo "--- Function exists"
         return 1
